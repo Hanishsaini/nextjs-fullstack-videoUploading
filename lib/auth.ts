@@ -1,75 +1,11 @@
-import { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials"
-import { PassThrough } from "stream";
-import { connectToDatabase } from "./db";
-import User from "@/Models/Users";
-import bcrypt from "bcryptjs";
+import { createClient } from "@/lib/supabase/server";
+import { cache } from "react";
 
-export const authOptions: NextAuthOptions = {
-     providers: [
-   CredentialsProvider({
-    name: "Credentials",
-    credentials: {
-        email: {label: "Email", type: "text"},
-        password: {label: "Password", type: "password"}
-    },
+export const getCurrentUser = cache(async () => {
+    const supabase = await createClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
-    async authorize(credentials){
-        if(!credentials?.email || credentials?.password){
-            throw new Error("missing email or password")
-        }
-
-        try {
-           await connectToDatabase()
-         const user = await User.findOne({email: credentials.email})
-
-         if(!user){
-         throw new Error("no user found with this");
-         }
-
-        const isVaild =  await bcrypt.compare(
-            credentials.password,
-            user.password
-        )
-
-        
-         if(!user){
-         throw new Error("invalid password");
-         }
-
-         return {
-            id: user.id.toString(),
-            email: user.email
-         }
-
-        } catch (error) {
-            console.error("Auth error: ", error)
-            throw error 
-        }
-       },
-      }),
-     ],
-       callbacks: {
-        async jwt({token, user}){
-            if(user){
-                token.id = user.id
-            }
-            return token;
-        },
-         async session({session, token}){
-            if(session.user){
-                session.user.id = token.id as string
-            }
-            return session;
-        },
-       },
-       pages:{
-        signIn: "/login",
-        error: "/login",
-       },
-       session: {
-        strategy: "jwt",
-        maxAge: 30 * 24 * 60 * 60,
-       },
-       secret: process.env.NEXTAUTH_SECRET,
-};
+    return user;
+});

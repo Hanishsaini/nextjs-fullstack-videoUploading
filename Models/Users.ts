@@ -1,35 +1,16 @@
-import mongoose, {Schema, model, models} from "mongoose";
-import bcrypt from "bcryptjs";
 
+import mongoose, { Schema, model, models } from "mongoose";
 
-export interface IUser {
-    email: string;
-    password: string;
-    _id?: mongoose.Types.ObjectId;
-    createdAt: Date;
-    updatedAt?: Date;
-}
+const UserSchema = new Schema({
+  name: { type: String, required: true },
+  username: { type: String, unique: true, sparse: true },
+  email: { type: String, required: true, unique: true },
+  image: { type: String },
+  bio: { type: String, default: "" },
+  isPro: { type: Boolean, default: false },
+  subscriptionDate: { type: Date },
+  createdAt: { type: Date, default: Date.now },
+});
 
-
-const userSchema = new Schema<IUser>(
-    {
-        email: {type: String, required: true, unique: true},
-        password: {type: String, required: true}
-    },
-    {
-        timestamps: true
-    }
-);
-
-
-userSchema.pre('save', async function(next) {
-    if(this.isModified("password")){
-        this.password = await bcrypt.hash(this.password, 10)
-    }
-    next()
-})
-
-
-const User = models?.User || model<IUser>("User", userSchema)
-
-export default User
+const User = models.User || model("User", UserSchema);
+export default User;

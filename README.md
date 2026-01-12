@@ -36,5 +36,84 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 =======
-# nextjs-fullstack-videoUploading
->>>>>>> 8cf08d3250227a21507a5b173802aafbcbaf732e
+# Vidora - Fullstack Video Uploading Platform
+
+A modern, full-stack video uploading platform built with Next.js 15, MongoDB, Cloudinary, and Stripe.
+
+## Features
+
+-   **User Authentication**: Secure login with Google (NextAuth.js).
+-   **Video Uploading**: Upload videos to Cloudinary with daily limits for free users.
+-   **Video Playback**: Stream videos with a modern player.
+-   **Pro Subscription**: Upgrade to Pro via Stripe for unlimited uploads and badges.
+-   **Responsive Design**: Beautiful, dark-themed UI with smooth animations.
+
+## Getting Started
+
+### Prerequisites
+
+-   Node.js 18+
+-   MongoDB Atlas URI
+-   Cloudinary Account
+-   Stripe Account
+-   Google Cloud Console Project (for OAuth)
+
+### Environment Variables
+
+Create a `.env.local` file in the root directory and add the following:
+
+```env
+# Database
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/vidora
+
+# NextAuth
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_super_secret_key
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Stripe
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+### Installation
+
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/yourusername/vidora.git
+    cd vidora
+    ```
+
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+
+3.  Run the development server:
+    ```bash
+    npm run dev
+    ```
+
+4.  Open [http://localhost:3000](http://localhost:3000) with your browser.
+
+### Stripe Webhook Setup (Local Development)
+
+To test payments locally, you need to forward Stripe webhooks to your local server:
+
+1.  Install the Stripe CLI.
+2.  Login: `stripe login`
+3.  Listen for events:
+    ```bash
+    stripe listen --forward-to localhost:3000/api/webhook/stripe
+    ```
+4.  Copy the webhook signing secret (`whsec_...`) to your `.env.local` file.
+
+## Deployment
+
+Deploy easily on [Vercel](https://vercel.com). Remember to add all environment variables in the Vercel dashboard.
