@@ -33,13 +33,3 @@ This app allows:
 | Video Storage | Cloudinary |
 | Payments | Stripe |
 | Styles | Tailwind CSS |
-
----
-
-## 🔧 Getting Started
-
-### 1. Clone the repo
-
-```bash
-git clone https://github.com/Hanishsaini/nextjs-fullstack-videoUploading.git
-cd nextjs-fullstack-videoUploading
